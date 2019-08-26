@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import Purchase from '../Purchase/Purchase';
+import ListStocks from '../ListStocks/ListStocks';
+import Trending from '../Trending/Trending';
+import StockHistory from '../StockHistory/StockHistory';
 
 export class Home extends Component {
     render() {
@@ -9,23 +12,24 @@ export class Home extends Component {
             <div>
                 <Tabs >
                     <TabList>
-                        <Tab>Trending Stocks</Tab>
+                       
                         <Tab>List Of Stocks</Tab>
                         <Tab>Purchase Stocks</Tab>
                         <Tab>My Stock History</Tab>
+                        <Tab>Trending Stocks</Tab>
                     </TabList>
 
                     <TabPanel>
-                       
-                    </TabPanel>
-                    <TabPanel>
-                        <h2>Any content 2</h2>
+                         <ListStocks></ListStocks>
                     </TabPanel>
                     <TabPanel>
                         <Purchase></Purchase>                        
                     </TabPanel>
                     <TabPanel>
-                        <h2>Any content 4</h2>
+                        <StockHistory></StockHistory>
+                    </TabPanel>
+                    <TabPanel>
+                        <Trending></Trending>
                     </TabPanel>
                 </Tabs>
             </div>

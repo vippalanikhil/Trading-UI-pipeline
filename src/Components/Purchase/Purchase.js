@@ -2,26 +2,45 @@ import React, { Component } from 'react'
 import './Purchase.css'
 import axios from 'axios'
 import url from '../../config.json'
+import Axios from 'axios';
+import SweetAlert from 'sweetalert-react';
 export class Purchase extends Component {
     constructor(props) {
         super(props);
         this.state = {
             initialState: {
-                stockList:[{
-                    name:'Hero',
+                stockList: [{
+                    name: 'Hero',
                     unitPrice: '1100',
                     stockExchange: 'NSE'
-                }]
-               
+                }],
+                quantity:'',
+                unitPrice:'',
+                totalPriceObtained: false,
+                totalPrice:'',
+                stockId: '',
+                stockName:'',
+                updatedPrice: ''
+
             },
-            allStocksList:[]
-           
-           
+            allStocksList: [],
+            quantity: '',
+            stockId: '',
+            stockName: '',
+            unitPrice: '100',
+            totalPrice: '',
+            totalPriceObtained: false,
+            quantityError: '',
+            confirmed: false,
+            updatedPrice:''
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleCancel = this.handleCancel.bind(this);
-        
+        this.onStockChange = this.onStockChange.bind(this);
+        this.handleConfirm = this.handleConfirm.bind(this);
+        this.handleOrder = this.handleOrder.bind(this);
+        this.handleOrderCancel = this.handleOrderCancel.bind(this);
 
     }
     handleChange(e) {
@@ -31,72 +50,155 @@ export class Purchase extends Component {
 
     }
     componentDidMount() {
-        axios.get(`${url.url}/getAllStocks`)
+        axios.get(`${url.urlMahesh}/getAllStocks`)
             .then(res => {
-                console.log("res inside component did mount get all movies", res)
-                if (res.status === 200 && res.data.status === "SUCCESS"){
+                console.log("res inside component did mount get all stocks", res)
+                if (res.status === 200 && res.data.status === "SUCCESS") {
+                    console.log("inside success")
                     this.setState({
                         allStocksList: res.data.data
+                    }, () => {
+                        console.log("all stock after set state", this.state.allStocksList)
                     });
                 } else {
-        
+
                 }
             })
+    }
+    handleConfirm(e){
+        e.preventDefault()
+        let stock={
+            stockId: this.state.stockId,
+            quantity: this.state.quantity
+        }
+        axios.post(`${url.urlDhana}/updatedPrice`,stock )
+                .then(res => {
+                    console.log("res inside handle confirm", res)
+                    if (res.status === 200 && res.data.status === "SUCCESS") {
+                        console.log("inside success")
+                        this.setState({
+                            updatedPrice: res.data.totalPrice,
+                            confirmed: true
+                        }, () => {
+                            console.log("updated price", this.state.updatedPrice)
+                        });
+                    } else {
+    
+                    }
+                }).catch(err => {
+                    
+                })
+    }
+    handleOrderCancel(e){
+        e.preventDefault()
+        let userId=localStorage.getItem('userId')
+        let stock={
+            stockId: this.state.stockId,
+            quantity: this.state.quantity,
+            userId: userId,
+            price: this.state.updatedPrice,
+            status: "CANCEL",
+            unitPrice: this.state.unitPrice
+        }
+        axios.post(`${url.urlSharath}/order`,stock )
+                .then(res => {
+                    console.log("res inside handle confirm", res)
+                    if (res.status === 200 && res.data.status === "SUCCESS") {
+                        console.log("inside success")
+                        this.setState({
+                            orderId: res.data.orderId
+                        }, () => {
+                            console.log("orderid", this.state.orderId)
+                        });
+                        alert(`Order submitted successfully. Order Id: ${this.state.orderId}`)
+                        this.props.history.push('/home')
+                    } else {
+    
+                    }
+                }).catch(err => {
+                    
+                })
+    }
+    handleOrder(e){
+        e.preventDefault()
+        let userId=localStorage.getItem('userId')
+        let stock={
+            stockId: this.state.stockId,
+            quantity: this.state.quantity,
+            userId: userId,
+            price: this.state.updatedPrice,
+            status: "SUCCESS",
+            unitPrice: this.state.unitPrice
+        }
+        axios.post(`${url.urlSharath}/order`,stock )
+                .then(res => {
+                    console.log("res inside handle confirm", res)
+                    if (res.status === 200 && res.data.status === "SUCCESS") {
+                        console.log("inside success")
+                        this.setState({
+                            orderId: res.data.orderId
+                        }, () => {
+                            console.log("orderid", this.state.orderId)
+                        });
+                        alert(`Order submitted successfully. Order Id: ${this.state.orderId}`)
+                        this.props.history.push('/home')
+                    } else {
+    
+                    }
+                }).catch(err => {
+                    
+                })
+
     }
     handleSubmit(e) {
         e.preventDefault()
         this.validate().then((res) => {
             console.log("res", res)
-            const { movieId, theatreId, date } = this.state
-            const movie = {
-                movieId: movieId,
-                theatreId: theatreId,
-                date: date
+            const { stockId, unitPrice, quantity } = this.state
+            let userId = localStorage.getItem('userId')
+            const stock = {
+                stockId: stockId,
+                quantity: parseInt(quantity),
+                unitPrice: unitPrice
             };
-            this.props.history.push({
-                pathname: '/search-result',
-                
-            })
+            console.log("validation response", res)
             if (res) {
-                this.getData(movie).then((response) => {
+                this.getData(stock).then((response) => {
+                    console.log("response of purchase", response)
                     if (response.status === 200 && response.data.status === "SUCCESS") {
-                        this.props.validateUser(true);
-                        this.props.history.push({
-                            pathname: '/search-result',
-                            state:{data: response.data.data, date: this.state.date}
+                        console.log("response of purchase", response)
+                        this.setState({
+                            totalPriceObtained: true,
+                            totalPrice: response.data.totalPrice
                         })
-                    } else{
+                    } else {
                         alert(`Sorry we do not find any movies available on this date`);
                     }
-                  })
-                }
+                })
+            }
         });
 
     }
-    onTheatreChange(e) {
-        this.setState({
-            theatreId: this.state.allTheatreList[e.target.value - 1].theatreId,
-            theatreName: this.state.allTheatreList[e.target.value - 1].theatreName
-        })
-
-    }
+ 
     onStockChange(e) {
-
         this.setState({
-            movieId: this.state.allMoviesList[e.target.value - 1].movieId,
-            movieName: this.state.allMoviesList[e.target.value - 1].movieName
+            stockId: this.state.allStocksList[e.target.value - 1].stockId,
+            stockName: this.state.allStocksList[e.target.value - 1].stockName,
+            unitPrice: this.state.allStocksList[e.target.value - 1].unitPrice
+        }, () => {
+            console.log("After stock change", this.state.stockId, this.state.stockName)
         })
 
     }
     handleCancel(e) {
         e.preventDefault();
         this.setState(() => this.initialState)
-        document.getElementById("searchform").reset();
+        document.getElementById("purchaseform").reset();
         console.log("state after reset", this.state)
     }
-    getData(movie) {
+    getData(stock) {
         return new Promise((resolve, reject) => {
-            axios.get(`${url.urlmahesh}/searchMovie/${movie.movieId}/${movie.theatreId}`)
+            axios.post(`${url.urlPradeep}/totalPrice`, stock)
                 .then(res => {
                     resolve(res)
                 }).catch(err => {
@@ -105,48 +207,55 @@ export class Purchase extends Component {
         });
     }
     validate() {
-        console.log("Inside validate")
-        let isValid = true;
-        const errors = {
-            dateError: ''
-        }
-        var UserDate = this.state.date
-        var ToDate = new Date();
+        return new Promise((resolve, reject) => {
+            console.log("Inside validate")
+            let isValid = true;
+            const errors = {
+                quantityError: ''
+            }
+            var UserDate = this.state.date
+            var ToDate = new Date();
 
-        // if (this.state.date && new Date(UserDate).getTime() >= ToDate.getTime()) {
-        //     console.log("Date is valid")
-        // } else {
-        //     isValid = false;
-        //     errors.dateError = "Please select valid date either today or future date"
-        // }
+            // if (this.state.date && new Date(UserDate).getTime() >= ToDate.getTime()) {
+            //     console.log("Date is valid")
+            // } else {
+            //     isValid = false;
+            //     errors.dateError = "Please select valid date either today or future date"
+            // }
+            var pattern = new RegExp('^\\d*$');
+            if (pattern.test(this.state.quantity && this.state.quantity > 0)) {
 
+            } else {
+                // isValid=false;
+                // errors.quantityError="Quantity should be a number greater than 0"
 
-        this.setState({
-            ...this.state,
-            ...errors
+            }
+            this.setState({
+                ...this.state,
+                ...errors
+            })
+            return resolve(true)
         })
-        console.log("isValid inside validate", isValid)
-        return Promise.resolve(isValid);
 
     }
     render() {
-        let stockList = this.state.initialState.stockList.map((item, i) => {
+
+        let stockList = this.state.allStocksList.map((item, i) => {
+            console.log("item", item)
             return (
-                <option key={i} value={item.movieId}>{item.movieName}</option>
+                <option key={i} value={item.stockId}>{item.stockName}</option>
             )
         }, this);
-      
+        console.log("stock list inside render", stockList)
         return (
             <div>
-                <header >
+                {/* <header >
                     <h2> Buy Stocks</h2>
-                </header>
+                </header> */}
                 <form id="purchaseform" className="purchaseform">
                     <div className="form-group">
-                        <br></br>
                         <div className="form-group col-xs-3">
                             <label htmlFor="stockName" style={{ "font-weight": "bold" }}>Select the stock</label>
-                            <br></br>
                             <select
                                 className="form-control"
                                 id="stockName"
@@ -157,7 +266,28 @@ export class Purchase extends Component {
                             </select>
                         </div>
                     </div>
-                    <br></br>
+                    <div className="form-group">
+                        <span className="pull-right text-danger " ><small>{this.state.quantityError}</small></span>
+                        <label htmlFor="quantity" style={{ "font-weight": "bold" }}>Enter the quantity</label>
+                        <input
+                            type="quantity"
+                            id="quantity"
+                            onChange={this.handleChange}
+                            value={this.state.quantity}
+                            className="form-control"
+                            placeholder="Enter the quantity" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="unitPrice" style={{ "font-weight": "bold" }}>Unit Price for selected stock</label>
+                        <input
+                            type="unitPrice"
+                            id="unitPrice"
+                            value={this.state.unitPrice}
+                            className="form-control"
+                            readOnly />
+
+                        <h7 >***Brokerage for stock is 10%</h7>
+                    </div>
                     <span>
                         <button id="submitsearch" type="submit" className="but" onClick={this.handleSubmit}>Buy</button>
                     </span>
@@ -166,6 +296,33 @@ export class Purchase extends Component {
                     </span>
 
                 </form>
+                <br></br>
+                {
+                    this.state.totalPriceObtained ?
+                        (<div>
+                            <span>
+                                <h5>Total Price in INR: {this.state.totalPrice}</h5>
+                                    <button id="submitconfirm" type="submit" className="but" onClick={this.handleConfirm}>Confirm</button>
+                                    <button id="submitcancel" type="submit" className="but" onClick={this.handleCancel}>Cancel</button>
+
+                            </span>
+                        </div>
+                        ) :
+                        (<div></div>)
+                }
+                <br></br>
+                {
+                    this.state.confirmed ?
+                        (<div>
+                            <span>
+                                <h5>Total Price in INR: {this.state.totalPrice} &nbsp; &nbsp; Updated Price in INR: {this.state.updatedPrice} </h5>
+                                <button id="submitorder" type="submit" className="butgreen" onClick={this.handleOrder }>Confirm</button>
+                                <button id="submitcancel" type="submit" className="but" onClick={this.handleOrderCancel}>Cancel</button>
+                            </span>
+                        </div>
+                        ) :
+                        (<div></div>)
+                }
             </div>
         )
     }
