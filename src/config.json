@@ -1,0 +1,5 @@
+{
+    "jsonServerUrl" : "http://10.117.189.233:9900/",
+    "url": "http://10.117.189.233:9900/api",
+    "urlCharan": "http://10.117.189.211:8087/trading/api"
+}
