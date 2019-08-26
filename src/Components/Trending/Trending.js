@@ -9,23 +9,23 @@ export class Trending extends Component {
         this.state = {
             allStocksList: [{
                 stockName: 'Reliance Industries Ltd',
-                crisilRating: 2
-            },
-            {
-                stockName: "Bajaj Auto Ltd",
-                crisilRating: 6
-            },
-            {
-                stockName: "Dr.Reddy's Laboratories Ltd",
-                crisilRating: 4
-            },
-            {
-                stockName: "Bharat Heavy Electricals Ltd",
                 crisilRating: 10
             },
             {
-                stockName: "State Bank Of India",
+                stockName: "Bajaj Auto Ltd",
                 crisilRating: 9
+            },
+            {
+                stockName: "Dr.Reddy's Laboratories Ltd",
+                crisilRating: 8
+            },
+            {
+                stockName: "Bharat Heavy Electricals Ltd",
+                crisilRating: 7
+            },
+            {
+                stockName: "State Bank Of India",
+                crisilRating: 6
 
             }
             ]
