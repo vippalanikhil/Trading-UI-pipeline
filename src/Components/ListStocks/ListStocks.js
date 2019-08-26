@@ -10,7 +10,7 @@ export class ListStocks extends Component {
         }
     }
     componentDidMount() {
-        axios.get(`${url.urlMahesh}/getAllStocks`)
+        axios.get(`${url.url}/getAllStocks`)
             .then(res => {
                 console.log("res inside component did mount get all stocks", res)
                 if (res.status === 200 && res.data.status==="SUCCESS" ){   
@@ -45,7 +45,7 @@ export class ListStocks extends Component {
                                             <td> {each.stockName}</td>
                                             <td> {each.unitPrice}</td>
                                             <td> NSE </td>
-                                            <td> {each.rating}</td>
+                                            <td> {each.rating   }</td>
                                         </tr>
                                     ))
                                 }

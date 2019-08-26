@@ -50,7 +50,7 @@ export class Purchase extends Component {
 
     }
     componentDidMount() {
-        axios.get(`${url.urlMahesh}/getAllStocks`)
+        axios.get(`${url.url}/getAllStocks`)
             .then(res => {
                 console.log("res inside component did mount get all stocks", res)
                 if (res.status === 200 && res.data.status === "SUCCESS") {
@@ -71,7 +71,7 @@ export class Purchase extends Component {
             stockId: this.state.stockId,
             quantity: this.state.quantity
         }
-        axios.post(`${url.urlDhana}/updatedPrice`,stock )
+        axios.post(`${url.url}/updatedPrice`,stock )
                 .then(res => {
                     console.log("res inside handle confirm", res)
                     if (res.status === 200 && res.data.status === "SUCCESS") {
@@ -100,7 +100,7 @@ export class Purchase extends Component {
             status: "CANCEL",
             unitPrice: this.state.unitPrice
         }
-        axios.post(`${url.urlSharath}/order`,stock )
+        axios.post(`${url.url}/order`,stock )
                 .then(res => {
                     console.log("res inside handle confirm", res)
                     if (res.status === 200 && res.data.status === "SUCCESS") {
@@ -130,7 +130,7 @@ export class Purchase extends Component {
             status: "SUCCESS",
             unitPrice: this.state.unitPrice
         }
-        axios.post(`${url.urlSharath}/order`,stock )
+        axios.post(`${url.url}/order`,stock )
                 .then(res => {
                     console.log("res inside handle confirm", res)
                     if (res.status === 200 && res.data.status === "SUCCESS") {
@@ -198,7 +198,7 @@ export class Purchase extends Component {
     }
     getData(stock) {
         return new Promise((resolve, reject) => {
-            axios.post(`${url.urlPradeep}/totalPrice`, stock)
+            axios.post(`${url.url}/totalPrice`, stock)
                 .then(res => {
                     resolve(res)
                 }).catch(err => {
@@ -223,13 +223,16 @@ export class Purchase extends Component {
             //     errors.dateError = "Please select valid date either today or future date"
             // }
             var pattern = new RegExp('^\\d*$');
-            if (pattern.test(this.state.quantity && this.state.quantity > 0)) {
+            if (pattern.test(this.state.quantity )) {
 
             } else {
-                // isValid=false;
-                // errors.quantityError="Quantity should be a number greater than 0"
-
+                isValid=false;
+                errors.quantityError="Quantity should be a number greater than 0"
             }
+            if(this.state.stockName===''){
+                isValid=false;
+                errors.stockNameError="Please select a stock from the list and enter quantity"
+            } 
             this.setState({
                 ...this.state,
                 ...errors
@@ -254,6 +257,7 @@ export class Purchase extends Component {
                 </header> */}
                 <form id="purchaseform" className="purchaseform">
                     <div className="form-group">
+                    <span className="pull-right text-danger " ><small>{this.state.stockNameError}</small></span>
                         <div className="form-group col-xs-3">
                             <label htmlFor="stockName" style={{ "font-weight": "bold" }}>Select the stock</label>
                             <select
@@ -286,7 +290,7 @@ export class Purchase extends Component {
                             className="form-control"
                             readOnly />
 
-                        <h7 >***Brokerage for stock is 10%</h7>
+                        <h7 >***Brokerage fee is 10%</h7>
                     </div>
                     <span>
                         <button id="submitsearch" type="submit" className="but" onClick={this.handleSubmit}>Buy</button>

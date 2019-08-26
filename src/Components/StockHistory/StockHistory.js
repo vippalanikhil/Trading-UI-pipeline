@@ -11,7 +11,7 @@ export class StockHistory extends Component {
     }
     componentDidMount() {
         let userId=localStorage.getItem('userId')
-        axios.get(`${url.urlMahesh}/myOrders/3`)
+        axios.get(`${url.url}/myOrders/${userId}`)
             .then(res => {
                 console.log("res inside component did mount get my orders", res)
                 if (res.status === 200 && res.data.status==="SUCCESS" ){   

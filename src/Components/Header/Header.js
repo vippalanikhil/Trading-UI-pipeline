@@ -18,7 +18,7 @@ class Header extends Component {
             <div>
                 <div style={{ backgroundColor: '#ff6200', color: '#fff' }}>
                     <img src="https://static.puzzlefactory.pl/puzzle/189/950/original.jpg" alt='not found' width="200px" height="100px" />
-                        <span className='' style={{ color: '#fff', fontSize: '30px', margin: '15%',fontStyle: 'italic' }}>ING Trading-Investments at fingertip.</span>
+                        <span className='' style={{ color: '#fff', fontSize: '30px', margin: '15%',fontStyle: 'italic' }}>  InstaTradE – Invest And Grow With US </span>
                     {
                         this.props.isLoggedIn ?
                             <span ><button className="bt" onClick={() => this.props.redirect('/logout', this.props.history)} data-toggle="tooltip" title="Logout" >Logout</button></span> :

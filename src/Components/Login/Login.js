@@ -63,7 +63,7 @@ export class Login extends Component {
         //     }
         // }
         return new Promise((resolve, reject) => {
-            axios.post(`${url.urlCharan}/login`, user)
+            axios.post(`${url.url}/login`, user)
                 .then(res => {
                     resolve(res)
                 }).catch(err => {
@@ -85,11 +85,16 @@ export class Login extends Component {
                 isValid = true;
             } else {
                 isValid = false;
-                errors.passwordError = 'password should be more than 4 characters'
+                errors.passwordError = 'Password should be more than 4 characters'
             }
         } else {
             isValid = false;
             errors.emailIdError = 'Email Id should be in proper format'
+        }
+        if(this.state.emailId===''|| this.state.password ===''){
+            isValid = false;
+            errors.emailIdError="Email is mandatory field"
+            errors.passwordError="Password is mandatory field"
         }
 
         this.setState({
