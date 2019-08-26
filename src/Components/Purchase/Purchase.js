@@ -140,7 +140,7 @@ export class Purchase extends Component {
                         }, () => {
                             console.log("orderid", this.state.orderId)
                         });
-                        alert(`Order submitted successfully. Order Id: ${this.state.orderId}`)
+                        alert("Order submission cancelled")
                         this.props.history.push('/home')
                     } else {
     
