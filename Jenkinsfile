@@ -17,7 +17,7 @@ pipeline {
                 sh '. ~/.nvm/nvm.sh'
                 sh 'source ~/.nvm/nvm.sh'
                 
-                sh 'npm install node'
+                sh 'nvm install node'
             }
         }
         stage('Node and npm version') {
