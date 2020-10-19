@@ -12,6 +12,7 @@ pipeline {
             }
         stage('install npm and noejs'){
             steps{
+                sh 'rm -rf /var/lib/jenkins/.nvm'
             sh 'cd '
             sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash'
                 
