@@ -13,6 +13,14 @@ pipeline {
         stage('install npm and noejs'){
             steps{
             sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash'
+                sh '. ~/.nvm/nvm.sh'
+                sh 'nvm install node
+'
+            }
+        }
+        stage('Node and npm version') {
+            steps{
+            sh 'npm --version && node --version'
             }
         }
         }
