@@ -15,7 +15,7 @@ pipeline {
                 sh'npm install'
                 sh'npm run build'
                 sh'cd build'
-                sh'npm run start'
+                sh'npm start'
             }
         }
     }
