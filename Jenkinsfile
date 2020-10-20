@@ -15,7 +15,7 @@ pipeline {
                 sh'npm install'
                 sh'npm run build'
                 sh'cd /var/lib/jenkins/workspace/test-pipeline/build'
-                sh'npm start'
+                sh'pm2 --name Trading-UI start npm -- start'
             }
         }
     }
