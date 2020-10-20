@@ -14,7 +14,7 @@ pipeline {
                 sh'npm audit fix'
                 sh'npm install'
                 sh'npm run build'
-                sh'cd build'
+                sh'cd /var/lib/jenkins/workspace/test-pipeline/build'
                 sh'npm start'
             }
         }
